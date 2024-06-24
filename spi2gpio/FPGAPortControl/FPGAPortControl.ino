@@ -385,6 +385,12 @@ void led_reverse(void) {
   }
   */
   v = regRead(GPB_ODATA);
+  // 0x3F = 0011 1111, (v & 0x3F): 保留v的低6位
+  // 0xC0 = 1100 0000, (leds & 0xC0): 保留leds的高2位
+  // (v & 0x3F) | (leds & 0xC0) 相当于把v的低6位和新的led状态（高2位）拼接到了一起
+  //leds = 0x80 = 1000 0000, 
+  //leds = ~leds: 翻转所有位，1000 0000 -> 0111 1111 = 0x7F
+  //实现了板载LED L1和L2交替闪烁
   regWrite(GPB_ODATA, (v & 0x3F) | (leds & 0xC0));
   leds = ~leds;
 
